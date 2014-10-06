@@ -104,7 +104,7 @@ $geoipdat = "/usr/local/share/examples/GeoIP/GeoLiteCity.dat" unless $geoipdat;
 
 #####Begin: Assembling date/time code.#####
 $curtimeformat = format_epoch(time);
-my $gi = Geo::IP->open("/usr/local/share/GeoIP/GeoIPCity.dat", GEOIP_STANDARD);
+my $gi = Geo::IP->open($geoipdat, GEOIP_STANDARD);
 
 if ($date_filter eq "yes") {
   if ($filter_type eq "range") {
