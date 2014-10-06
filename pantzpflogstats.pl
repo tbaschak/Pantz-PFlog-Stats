@@ -29,6 +29,7 @@
 # is given to the website (pantz.org) in the modified code.
 
 use Time::Local;
+use Geo::IP;
 
 ################################
 # Start Configuration Settings #
@@ -93,12 +94,17 @@ $time_amount = "12" unless $time_amount;
 $lower_date = 20070205000000 unless $lower_date;
 $upper_date = 20070206235959 unless $upper_date;
 
+# GeoIP Variables
+# 
+$geoipdat = "/usr/local/share/examples/GeoIP/GeoLiteCity.dat" unless $geoipdat;
+
 ##############################
 # End Configuration Settings #
 ##############################
 
 #####Begin: Assembling date/time code.#####
 $curtimeformat = format_epoch(time);
+my $gi = Geo::IP->open("/usr/local/share/GeoIP/GeoIPCity.dat", GEOIP_STANDARD);
 
 if ($date_filter eq "yes") {
   if ($filter_type eq "range") {
@@ -271,19 +277,22 @@ if ($hostname_lookup eq "on") {
   print PFHTMLSTATS "<tr><td><b>Hostname</b></td><td><b>Source IP</b></td>
                      <td><b># of blocks in</b></td></tr>\n";
 } else {
-  print PFHTMLSTATS "<tr><td><b>Source IP</b>
-                     </td><td><b># of blocks in</b></td></tr>\n";
+  print PFHTMLSTATS "<tr><td><b>Source IP</b></td><td><b># of blocks in</b></td><td><b>Country</b></td></tr>\n";
 }
 
 # Print hostname, ip, and count if hostname var is set. Otherwise just print ip and count lines.
 for $print_tot_src_ip_key1 ( sort {  $tcud_src_hst_tot_ct{$b}[1] <=> $tcud_src_hst_tot_ct{$a}[1] }  keys %tcud_src_hst_tot_ct ) {
+  my $record = $gi->record_by_addr($print_tot_src_ip_key1);
+  my $country = $record->country_name;
+  my $flag = lc($record->country_code);
   if ($hostname_lookup eq "on") {
     print PFHTMLSTATS "<tr><td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[0]</td>
                        <td><a href=\"#IP:$print_tot_src_ip_key1\">$print_tot_src_ip_key1</a>
                        </td><td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[1]</td></tr>\n";
   } else {
     print PFHTMLSTATS "<tr><td><a href=\"#IP:$print_tot_src_ip_key1\">$print_tot_src_ip_key1</a></td>
-                       <td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[1]</td></tr>\n";
+                       <td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[1]</td>
+                       <td><img src='flag/png/$flag.png'>$country</td></tr>\n";
   }
 }
 
