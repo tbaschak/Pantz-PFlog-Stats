@@ -96,7 +96,7 @@ $upper_date = 20070206235959 unless $upper_date;
 
 # GeoIP Variables
 # 
-$geoipdat = "/usr/local/share/examples/GeoIP/GeoLiteCity.dat" unless $geoipdat;
+$geoipdat = "/usr/local/share/GeoIP/GeoIP.dat" unless $geoipdat;
 
 ##############################
 # End Configuration Settings #
@@ -282,9 +282,9 @@ if ($hostname_lookup eq "on") {
 
 # Print hostname, ip, and count if hostname var is set. Otherwise just print ip and count lines.
 for $print_tot_src_ip_key1 ( sort {  $tcud_src_hst_tot_ct{$b}[1] <=> $tcud_src_hst_tot_ct{$a}[1] }  keys %tcud_src_hst_tot_ct ) {
-  my $record = $gi->record_by_addr($print_tot_src_ip_key1);
-  my $country = $record->country_name;
-  my $flag = lc($record->country_code);
+  my $ip = $print_tot_src_ip_key1;
+  my $country = $gi->country_name_by_addr($ip);
+  my $flag = lc($gi->country_code_by_addr($ip));
   if ($hostname_lookup eq "on") {
     print PFHTMLSTATS "<tr><td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[0]</td>
                        <td><a href=\"#IP:$print_tot_src_ip_key1\">$print_tot_src_ip_key1</a>
