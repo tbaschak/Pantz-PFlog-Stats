@@ -224,25 +224,115 @@ close(IN);
 open(PFHTMLSTATS, ">$pfhtmlfile") or die ("Can't create html file");
 
 print PFHTMLSTATS qq{
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html><head><title>Pantz PFlog Stats</title>
-<meta http-equiv="content-type" content="text/html;charset=utf-8">
-</head>
-<body style="text-align: center;">
-<h2>Pantz PFlog Stats</h2>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pantz PFlog Stats</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+    /* Space out content a bit */
+    body {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    /* Everything but the jumbotron gets side spacing for mobile first views */
+    .header,
+    .footer {
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    /* Custom page header */
+    .header {
+      border-bottom: 1px solid #e5e5e5;
+    }
+    /* Make the masthead heading the same height as the navigation */
+    .header h3 {
+      padding-bottom: 19px;
+      margin-top: 0;
+      margin-bottom: 0;
+      line-height: 40px;
+    }
+
+    /* Custom page footer */
+    .footer {
+      padding-top: 19px;
+      color: #777;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    /* Customize container */
+    @media (min-width: 768px) {
+      .container {
+        max-width: 730px;
+      }
+    }
+    .container-narrow > hr {
+      margin: 30px 0;
+    }
+
+    /* Main marketing message and sign up button */
+    .jumbotron {
+      text-align: center;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .jumbotron .btn {
+      padding: 14px 24px;
+      font-size: 21px;
+    }
+
+    /* Responsive: Portrait tablets and up */
+    @media screen and (min-width: 768px) {
+      /* Remove the padding we set earlier */
+      .header,
+      .footer {
+        padding-right: 0;
+        padding-left: 0;
+      }
+      /* Space out the masthead */
+      .header {
+        margin-bottom: 30px;
+      }
+      /* Remove the bottom border on the jumbotron for visual effect */
+      .jumbotron {
+        border-bottom: 0;
+      }
+    }
+    </style>
+  </head>
+  <body>
+  <div class="container">
+
+      <div class="jumbotron">
+        <h1>Pantz PFlog Stats</h1>
+<!--        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p> -->
 };
 
-print PFHTMLSTATS "<p>Log file Data from " . format_epoch($date_array[0]) . " to " . format_epoch($date_array[-1]) . "<br></p>\n";
+print PFHTMLSTATS "<p class='lead'>Log file Data from " . format_epoch($date_array[0]) . " to " . format_epoch($date_array[-1]) . "<br></p>\n";
 
 if ($date_filter eq "yes") {
-  print PFHTMLSTATS "<p>Showing data from " . format_epoch($low_epochsec) . " to " . format_epoch($up_epochsec) . "<br></p>\n";
+  print PFHTMLSTATS "<p class='lead'>Showing data from " . format_epoch($low_epochsec) . " to " . format_epoch($up_epochsec) . "<br></p>\n";
 }
 
 print PFHTMLSTATS qq {
-<p>Script run on: $curtimeformat <br></p>
-<TABLE BORDER="0">
-<tr><td valign="top">
-<TABLE BORDER="1">
+<p class="lead">Script run on: $curtimeformat </p>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+<TABLE BORDER="1" WIDTH="85%">
 };
 
 # Create host totals. Hash of hash. With threshold evaluation. Lookup host name if set. Sort most to least hits.
@@ -289,8 +379,10 @@ for $print_tot_src_ip_key1 ( sort {  $tcud_src_hst_tot_ct{$b}[1] <=> $tcud_src_h
 
 print PFHTMLSTATS qq{
 </table>
-</td> <td></td> <td valign="top">
-<TABLE BORDER="1">
+        </div>
+
+        <div class="col-lg-6">
+<TABLE BORDER="1" WIDTH="85%">
 <tr><td><b>Destination Port</b></td><td><b># of blocks in</b></td></tr>
 };
 
@@ -315,19 +407,19 @@ foreach $print_tot_dst_port_key (sort { $tcud_dst_port_tot_ct {$b} <=> $tcud_dst
                      <td>$tcud_dst_port_tot_ct{$print_tot_dst_port_key}</td></tr>\n";
 }
 
-print PFHTMLSTATS qq {\n</table>\n</td></tr>\n</table>\n\n<p><br><br></p><hr><p><br><br></p>};
+print PFHTMLSTATS qq {\n</table>\n</div>\n</div>\n\n<p><br><br></p><hr><p><br><br></p>};
 
 $hostportcount = 4;
 $hostporttablerowcount = 4;
 $was_anything_printed = 0;
 
-print PFHTMLSTATS "\n\n<TABLE BORDER=\"0\">\n\n";
+#print PFHTMLSTATS "\n\n<div class=\"row\">\n\n";
 
 # Start looping thru hash of hash. Print tables if thresholds were met.
 for $tcud_src_hstct_key ( keys %tcud_src_hstct ) {
   # Start a new row if our counter is reset.
   if ($hostportcount == $hostporttablerowcount) {
-    print PFHTMLSTATS "<tr valign=\"top\">\n\n";
+    print PFHTMLSTATS "<div class=\"row\">\n\n";
     $hostportcount = 0;
   }
   for $tcud_src_hst_dst_portct_key (sort { $tcud_src_hstct{$tcud_src_hstct_key}{$b} <=> $tcud_src_hstct{$tcud_src_hstct_key}{$a} } keys %{ 
@@ -338,9 +430,9 @@ $tcud_src_hstct{$tcud_src_hstct_key} } ) {
       $was_anything_printed++;
       # If this is our first time through and we met the threshold print the table heading.
       if ($was_anything_printed == 1) {
-        print PFHTMLSTATS "<td><TABLE BORDER=\"1\">\n";
+        print PFHTMLSTATS "<div class=\"col-lg-3\"><TABLE BORDER=\"1\">\n";
         print PFHTMLSTATS "<tr><td colspan=\"2\"><a name=\"IP:$tcud_src_hstct_key\"></a>
-                           <a href=\"https://who.is/whois-ip/ip-address/$tcud_src_hstct_key\" target=\"_new\">
+                           <a class=\"btn btn-danger\" href=\"https://who.is/whois-ip/ip-address/$tcud_src_hstct_key\" target=\"_new\">
                            <b>$tcud_src_hstct_key</b></a></td></tr><tr><td><b>Destination Port</b>
                            </td><td> <b># of blocks in</b></td></tr>\n";
       }
@@ -355,33 +447,33 @@ $tcud_src_hstct{$tcud_src_hstct_key} } ) {
   # If something was printed at least once increase column counter. Close our table.
   if ($was_anything_printed > 0) {
     $hostportcount++;
-    print PFHTMLSTATS "</table></td><td> </td>\n\n";
+    print PFHTMLSTATS "</table></div>\n\n";
   }
   # If host port counter has it its max (set above) close the whole row.
   if ($hostportcount == $hostporttablerowcount) {
-    print PFHTMLSTATS "</tr><tr><td> </td></tr>\n\n";
+    print PFHTMLSTATS "</div>\n\n";
   }
   $was_anything_printed = 0;
 }
 
 # If hash ended before row finished then close it.
 if ($hostportcount < $hostporttablerowcount) {
-  print PFHTMLSTATS "<td> </td></tr>\n";
+  print PFHTMLSTATS "</div>\n";
 }
 
 
-print PFHTMLSTATS "\n</table>\n\n<p><br><br></p><hr><p><br><br></p>\n";
+print PFHTMLSTATS "\n</div>\n\n<p><br><br></p><hr><p><br><br></p>\n";
 
 $porthostcount = 4;
 $porthosttablerowcount = 4;
 $was_anything_printed = 0;
 
-print PFHTMLSTATS "\n\n<TABLE BORDER=\"0\">\n";
+print PFHTMLSTATS "\n\n<DIV CLASS=\"row\">\n";
 
 for $tcud_dst_portct_key3 ( keys %tcud_dst_portct ) {
   # Start a new row if our counter is reset
   if ($porthostcount == $porthosttablerowcount) {
-    print PFHTMLSTATS "<tr valign=\"top\">\n\n";
+#    print PFHTMLSTATS "<div class=\"col-lg-3\">\n\n";
     $porthostcount = 0;
   }
   for $tcud_dst_portct_key4 (sort { $tcud_dst_portct{$tcud_dst_portct_key3}{$b} <=> $tcud_dst_portct{$tcud_dst_portct_key3}{$a} } keys 
@@ -392,9 +484,9 @@ for $tcud_dst_portct_key3 ( keys %tcud_dst_portct ) {
       $was_anything_printed++;
       # If this is our first time through and we met the threshold print the table heading.
       if ($was_anything_printed == 1) {
-        print PFHTMLSTATS "<td><TABLE BORDER=\"1\">\n";
+        print PFHTMLSTATS "<div class=\"col-lg-3\"><TABLE BORDER=\"1\">\n";
         print PFHTMLSTATS "<tr><td colspan=\"2\"><b><a name=\"PORT:$tcud_dst_portct_key3\"></a>
-                           <a href=\"http://isc.sans.org/port_details.php\?port=$tcud_dst_portct_key3\">
+                           <a class=\"btn btn-danger\" href=\"http://isc.sans.org/port_details.php\?port=$tcud_dst_portct_key3\">
                            $tcud_dst_portct_key3</a></b></td></tr><tr><td><b>Source IP</b></td>
                            <td> <b># of blocks in</b></td></tr>\n";
       }
@@ -407,21 +499,21 @@ for $tcud_dst_portct_key3 ( keys %tcud_dst_portct ) {
   # If something was printed increase column counter
   if ($was_anything_printed > 0) {
     $porthostcount++;
-    print PFHTMLSTATS "</table></td><td> </td>\n\n";
+    print PFHTMLSTATS "</table></div>\n\n";
   }
   # If host port counter has it its max (set above) close the whole row.
   if ($porthostcount == $porthosttablerowcount) {
-    print PFHTMLSTATS "</tr><tr><td> </td></tr>\n\n";
+    print PFHTMLSTATS "</div>\n\n";
   }
   $was_anything_printed = 0;
 }
 
 # If hash ended before row finished then close it.
 if ($porthostcount < $porthosttablerowcount) {
-  print PFHTMLSTATS "<td> </td></tr>\n\n";
+  print PFHTMLSTATS "</div>\n\n";
 }
 
-print PFHTMLSTATS "\n</table>\n</body></html>";
+print PFHTMLSTATS "\n</div>\n</div>\n</body></html>";
 
 close(PFHTMLSTATS);
 
