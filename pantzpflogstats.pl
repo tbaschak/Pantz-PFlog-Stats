@@ -418,7 +418,7 @@ for $tcud_dst_portct_key3 ( keys %tcud_dst_portct ) {
 
       # Print a table row.
       print PFHTMLSTATS "<tr><td><a href=\"https://who.is/whois-ip/ip-address/$tcud_dst_portct_key4\" target=\"_new\">
-                         $tcud_dst_portct_key4</a><img src='flag/png/$flag.png' alt='$country'></td><td>
+                         $tcud_dst_portct_key4</a><img src='flag/png/$flag.png' alt='$country' title='$country'></td><td>
                          $tcud_dst_portct{$tcud_dst_portct_key3}{$tcud_dst_portct_key4}</td></tr>\n";
     }
   }
