@@ -356,7 +356,7 @@ $tcud_src_hstct{$tcud_src_hstct_key} } ) {
         print PFHTMLSTATS "<tr><td colspan=\"2\"><a name=\"IP:$tcud_src_hstct_key\"></a>
                            <a href=\"https://who.is/whois-ip/ip-address/$tcud_src_hstct_key\" target=\"_new\">
                            <b>$tcud_src_hstct_key</b></a> - 
-                           <img src='flag/png/$flag.png' alt='$country' title='$country'> $country</td></tr>
+                           <img src='flag/png/$flag.png' alt='$country' title='$country'></td></tr>
                            <tr><td><b>Destination Port</b></td><td> <b># of blocks in</b></td></tr>\n";
       }
       # Print a table row.
