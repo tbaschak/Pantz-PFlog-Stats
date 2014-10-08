@@ -275,9 +275,10 @@ for $tcud_src_hstct_key ( keys %tcud_src_hstct ) {
 # Print heading line with hostname if var is set. If not just print the ip heading line.
 if ($hostname_lookup eq "on") {
   print PFHTMLSTATS "<tr><td><b>Hostname</b></td><td><b>Source IP</b></td>
-                     <td><b># of blocks in</b></td></tr>\n";
+                     <td><b># of blocks in</b></td><td><b>Country</b></td></tr>\n";
 } else {
-  print PFHTMLSTATS "<tr><td><b>Source IP</b></td><td><b># of blocks in</b></td><td><b>Country</b></td></tr>\n";
+  print PFHTMLSTATS "<tr><td><b>Source IP</b></td><td><b># of blocks in</b></td>
+                    <td><b>Country</b></td></tr>\n";
 }
 
 # Print hostname, ip, and count if hostname var is set. Otherwise just print ip and count lines.
@@ -288,7 +289,8 @@ for $print_tot_src_ip_key1 ( sort {  $tcud_src_hst_tot_ct{$b}[1] <=> $tcud_src_h
   if ($hostname_lookup eq "on") {
     print PFHTMLSTATS "<tr><td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[0]</td>
                        <td><a href=\"#IP:$print_tot_src_ip_key1\">$print_tot_src_ip_key1</a>
-                       </td><td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[1]</td></tr>\n";
+                       </td><td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[1]</td>
+                       <td><img src='flag/png/$flag.png'>$country</td></tr>\n";
   } else {
     print PFHTMLSTATS "<tr><td><a href=\"#IP:$print_tot_src_ip_key1\">$print_tot_src_ip_key1</a></td>
                        <td>$tcud_src_hst_tot_ct{$print_tot_src_ip_key1}[1]</td>
@@ -347,11 +349,14 @@ $tcud_src_hstct{$tcud_src_hstct_key} } ) {
       $was_anything_printed++;
       # If this is our first time through and we met the threshold print the table heading.
       if ($was_anything_printed == 1) {
+        my $ip = $tcud_src_hstct_key;
+        my $country = $gi->country_name_by_addr($ip);
+        my $flag = lc($gi->country_code_by_addr($ip));
         print PFHTMLSTATS "<td><TABLE BORDER=\"1\">\n";
         print PFHTMLSTATS "<tr><td colspan=\"2\"><a name=\"IP:$tcud_src_hstct_key\"></a>
                            <a href=\"https://who.is/whois-ip/ip-address/$tcud_src_hstct_key\" target=\"_new\">
-                           <b>$tcud_src_hstct_key</b></a></td></tr><tr><td><b>Destination Port</b>
-                           </td><td> <b># of blocks in</b></td></tr>\n";
+                           <b>$tcud_src_hstct_key</b></a><img src='flag/png/$flag.png'>$country</td></tr>
+                           <tr><td><b>Destination Port</b></td><td> <b># of blocks in</b></td></tr>\n";
       }
       # Print a table row.
       print PFHTMLSTATS "<tr><td><a href=\"http://isc.sans.org/port_details.php\?port=$tcud_src_hst_dst_portct_key\">
